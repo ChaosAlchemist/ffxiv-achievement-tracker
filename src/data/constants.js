@@ -1,0 +1,12 @@
+const classes = [{ name: "Carpenter", code: "CRP"},
+    { name: "Blacksmith", code: "CRP"},
+    { name: "Armorer", code: "ARM"},
+    { name: "Goldsmith", code: "GSM"},
+    { name: "Leatherworker", code: "LTW"},
+    { name: "Weaver", code: "WVR"},
+    { name: "Alchemist", code: "ALC"},
+    { name: "Culinarian", code: "CUL"},
+    { name: "Botanist", code: "BTN"},
+    { name: "Miner", code: "MIN"},
+    { name: "Fisher", code: "FSH"},
+];
