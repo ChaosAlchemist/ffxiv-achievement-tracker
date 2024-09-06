@@ -21,7 +21,13 @@ function CrafterPage() {
   useEffect(() => {
     const crafterData = achievementsData[crafterCode];
     if (crafterData) {
-      const achievementList = crafterData.achievements;
+      const categories = crafterData.categories;
+      const individualAchievements = crafterData.individualAchievements;
+      const achievementList = [
+        ...Object.values(categories).flat(),
+        ...individualAchievements,
+      ];
+
       setAchievements(achievementList);
 
       const totalPoints = achievementList.reduce(
@@ -52,52 +58,66 @@ function CrafterPage() {
       </Typography>
 
       <Grid container spacing={2}>
-        {achievements.map((achievement, index) => {
-          const isComplete =
-            achievement.progress >= achievement.total ||
-            (achievement.total === 1 && achievement.progress === 1);
-
-          return (
+        {Object.keys(achievementsData[crafterCode]?.categories || {}).map(
+          (category, index) => (
+            <Grid item xs={12} key={index}>
+              <Typography variant="h6">{category}</Typography>
+              {achievementsData[crafterCode].categories[category].map(
+                (achievement, i) => (
+                  <Grid item xs={12} sm={6} key={i}>
+                    <Card>
+                      <CardContent>
+                        <Typography variant="h6">{achievement.name}</Typography>
+                        <Typography>
+                          Progress: {achievement.progress}/{achievement.total}
+                        </Typography>
+                        <LinearProgress
+                          variant="determinate"
+                          value={
+                            (achievement.progress / achievement.total) * 100
+                          }
+                        />
+                        {achievement.progress >= achievement.total && (
+                          <Box display="flex" alignItems="center">
+                            <CheckCircleIcon color="success" />
+                            <Typography
+                              variant="body2"
+                              color="textSecondary"
+                              style={{ marginLeft: 8 }}>
+                              Completed
+                            </Typography>
+                          </Box>
+                        )}
+                        <Typography variant="body2">
+                          {achievement.points} points
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                )
+              )}
+            </Grid>
+          )
+        )}
+        {achievementsData[crafterCode]?.individualAchievements.map(
+          (achievement, index) => (
             <Grid item xs={12} sm={6} key={index}>
               <Card>
                 <CardContent>
                   <Typography variant="h6">{achievement.name}</Typography>
-                  {achievement.total !== 1 ? (
-                    <>
-                      <Typography>
-                        Progress: {achievement.progress}/{achievement.total}
-                      </Typography>
-                      <LinearProgress
-                        variant="determinate"
-                        value={(achievement.progress / achievement.total) * 100}
-                      />
-                      <Typography variant="body2">
-                        {achievement.points} points
-                      </Typography>
-                    </>
-                  ) : (
-                    <Typography>
-                      {achievement.progress === 1
-                        ? "Completed"
-                        : "Not Completed"}
-                    </Typography>
-                  )}
-                  {isComplete && (
-                    <Box display="flex" alignItems="center">
-                      <CheckCircleIcon color="success" />
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        style={{ marginLeft: 8 }}>
-                        Completed
-                      </Typography>
-                    </Box>
-                  )}
+                  <Typography>
+                    {achievement.progress >= achievement.total
+                      ? "Completed"
+                      : "Not Completed"}
+                  </Typography>
+                  <Typography variant="body2">
+                    {achievement.points} points
+                  </Typography>
                 </CardContent>
               </Card>
             </Grid>
-          );
-        })}
+          )
+        )}
       </Grid>
     </Container>
   );
